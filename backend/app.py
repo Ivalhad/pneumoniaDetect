@@ -7,18 +7,17 @@ from tensorflow.keras.preprocessing import image
 
 # Inisialisasi aplikasi Flask
 app = Flask(__name__)
-CORS(app)  # Mengizinkan Cross-Origin Resource Sharing
+CORS(app)
 
 # Tentukan path ke model dan folder upload
 MODEL_PATH = 'model/modelPneumonia.h5'
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Pastikan folder uploads ada
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# Muat model saat aplikasi pertama kali dijalankan (efisiensi)
+# Muat model saat aplikasi pertama kali dijalankan
 try:
     model = load_model(MODEL_PATH)
     print(f"* Model '{MODEL_PATH}' berhasil dimuat.")
@@ -26,65 +25,70 @@ except Exception as e:
     print(f"* Error memuat model: {e}")
     model = None
 
+# --- BAGIAN BARU: Route untuk halaman utama ---
+@app.route('/')
+def home():
+    """Endpoint untuk halaman utama."""
+    return jsonify({
+        'status': 'success',
+        'message': 'Server deteksi pneumonia berjalan dengan baik!'
+    })
+# -------------------------------------------
+
 def model_predict(img_path, model):
-    """
-    Fungsi untuk melakukan prediksi pada satu gambar.
-    """
-    # Memuat dan memproses gambar
+    """Fungsi untuk melakukan prediksi pada satu gambar."""
     img = image.load_img(img_path, target_size=(150, 150))
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
-    x = x / 255.0  # Normalisasi
-
-    # Melakukan prediksi
+    x = x / 255.0
     preds = model.predict(x)
     return preds[0][0]
 
-# Definisikan API endpoint untuk prediksi
 @app.route('/predict', methods=['POST'])
 def predict():
     if model is None:
         return jsonify({'error': 'Model tidak dapat dimuat, cek log server.'}), 500
-
-    # Cek apakah ada file yang diunggah
+    
     if 'file' not in request.files:
         return jsonify({'error': 'Tidak ada file yang dikirim'}), 400
     
     file = request.files['file']
 
-    # Cek apakah nama file kosong
     if file.filename == '':
         return jsonify({'error': 'Nama file tidak boleh kosong'}), 400
 
     if file:
-        # Simpan file sementara di folder uploads
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(file_path)
 
-        # Lakukan prediksi
         try:
             prediction_value = model_predict(file_path, model)
-
-            # Interpretasi hasil prediksi
-            if prediction_value > 0.5:
-                result = 'Pneumonia'
-            else:
-                result = 'Normal'
-            
-            # Hapus file setelah prediksi (opsional, untuk menjaga kebersihan)
+            result = 'Pneumonia' if prediction_value > 0.5 else 'Normal'
             os.remove(file_path)
-
-            # Kirim hasil dalam format JSON
+            
             return jsonify({
                 'prediction': result,
                 'confidence': float(prediction_value)
             })
         except Exception as e:
-            return jsonify({'error': f'Gagal melakukan prediksi: {e}'}), 500
+            # Jika terjadi error saat prediksi, akan ditangkap oleh error handler di bawah
+            # Kita bisa memanggil error 500 secara eksplisit
+            app.logger.error(f"Error saat prediksi: {e}")
+            # Meneruskan error ke handler 500
+            raise e
             
     return jsonify({'error': 'Terjadi kesalahan'}), 500
 
-# Jalankan server
+# --- BAGIAN BARU: Error handler untuk error server ---
+@app.errorhandler(500)
+def internal_server_error(e):
+    """Handler untuk Internal Server Error."""
+    return jsonify({
+        'status': 'error',
+        'message': 'Terjadi kesalahan internal pada server.',
+        'details': str(e) # Menampilkan detail error
+    }), 500
+# ----------------------------------------------------
+
 if __name__ == '__main__':
-    # Gunakan port 5000 dan jalankan dalam mode debug
     app.run(port=5000, debug=True)
