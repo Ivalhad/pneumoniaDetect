@@ -5,11 +5,9 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 
-# Inisialisasi aplikasi Flask
 app = Flask(__name__)
 CORS(app)
 
-# Tentukan path ke model dan folder upload
 MODEL_PATH = 'model/modelPneumonia.h5'
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -25,7 +23,7 @@ except Exception as e:
     print(f"* Error memuat model: {e}")
     model = None
 
-# --- BAGIAN BARU: Route untuk halaman utama ---
+# ---  Route untuk halaman utama ---
 @app.route('/')
 def home():
     """Endpoint untuk halaman utama."""
@@ -71,22 +69,21 @@ def predict():
                 'confidence': float(prediction_value)
             })
         except Exception as e:
-            # Jika terjadi error saat prediksi, akan ditangkap oleh error handler di bawah
-            # Kita bisa memanggil error 500 secara eksplisit
+
             app.logger.error(f"Error saat prediksi: {e}")
-            # Meneruskan error ke handler 500
+
             raise e
             
     return jsonify({'error': 'Terjadi kesalahan'}), 500
 
-# --- BAGIAN BARU: Error handler untuk error server ---
+# --- Error handler untuk error server ---
 @app.errorhandler(500)
 def internal_server_error(e):
     """Handler untuk Internal Server Error."""
     return jsonify({
         'status': 'error',
         'message': 'Terjadi kesalahan internal pada server.',
-        'details': str(e) # Menampilkan detail error
+        'details': str(e) 
     }), 500
 # ----------------------------------------------------
 
