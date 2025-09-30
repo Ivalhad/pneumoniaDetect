@@ -104,7 +104,7 @@ function displayResult(data) {
     const confidence = (data.confidence * 100).toFixed(2);
 
     predictionLabel.textContent = prediction;
-    confidenceLabel.textContent = `Tingkat Keyakinan: ${confidence}%`;
+    confidenceLabel.textContent = `Tingkat Akurasi: ${confidence}%`;
 
     if (prediction === 'Pneumonia') {
         predictionLabel.className = 'text-4xl font-bold text-red-600';
