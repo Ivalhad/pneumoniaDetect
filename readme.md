@@ -86,8 +86,3 @@ Aplikasi Anda sekarang siap digunakan\!
 ```
 
 ---
-
-**Tips:**
-* Ganti URL screenshot di bagian paling atas dengan screenshot aplikasi Anda yang sedang berjalan. Anda bisa mengunggahnya ke situs seperti [Imgur](https://imgur.com/) untuk mendapatkan URL.
-* Ganti URL `git clone` dengan URL repositori GitHub Anda yang sebenarnya.
-```
