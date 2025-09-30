@@ -15,7 +15,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# Muat model saat aplikasi pertama kali dijalankan
+# model saat aplikasi pertama kali dijalankan
 try:
     model = load_model(MODEL_PATH)
     print(f"* Model '{MODEL_PATH}' berhasil dimuat.")
@@ -23,7 +23,7 @@ except Exception as e:
     print(f"* Error memuat model: {e}")
     model = None
 
-# ---  Route untuk halaman utama ---
+# ---  route untuk halaman utama ---
 @app.route('/')
 def home():
     """Endpoint untuk halaman utama."""
@@ -42,6 +42,8 @@ def model_predict(img_path, model):
     preds = model.predict(x)
     return preds[0][0]
 
+
+# ---- route untuk prediksi ----
 @app.route('/predict', methods=['POST'])
 def predict():
     if model is None:
@@ -76,7 +78,7 @@ def predict():
             
     return jsonify({'error': 'Terjadi kesalahan'}), 500
 
-# --- Error handler untuk error server ---
+# --- error handler untuk error server ---
 @app.errorhandler(500)
 def internal_server_error(e):
     """Handler untuk Internal Server Error."""
