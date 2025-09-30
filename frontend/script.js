@@ -1,4 +1,4 @@
-// Menghubungkan elemen HTML ke JavaScript
+//elemen HTML ke JavaScript
 const uploadArea = document.getElementById('upload-area');
 const fileInput = document.getElementById('file-input');
 const resultArea = document.getElementById('result-area');
@@ -9,15 +9,11 @@ const predictionLabel = document.getElementById('prediction-label');
 const confidenceLabel = document.getElementById('confidence-label');
 const resetButton = document.getElementById('reset-button');
 
-// URL API Backend Flask Anda
+// URL API Backend Flask
 const API_ENDPOINT = 'http://127.0.0.1:5000/predict';
 
-// --- Event Listeners untuk Area Upload ---
+// --- event listeners ---
 
-// Membuka dialog file saat area upload diklik
-uploadArea.addEventListener('click', () => fileInput.click());
-
-// Mencegah perilaku default browser saat drag & drop
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     uploadArea.addEventListener(eventName, preventDefaults, false);
 });
@@ -27,7 +23,7 @@ function preventDefaults(e) {
     e.stopPropagation();
 }
 
-// Menambahkan highlight saat gambar diseret ke area upload
+// menambahkan highlight saat gambar diseret ke area upload
 ['dragenter', 'dragover'].forEach(eventName => {
     uploadArea.addEventListener(eventName, () => uploadArea.classList.add('bg-blue-50', 'border-blue-500'), false);
 });
@@ -36,7 +32,7 @@ function preventDefaults(e) {
     uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('bg-blue-50', 'border-blue-500'), false);
 });
 
-// Menangani file yang di-drop
+// fungsi file yang di drop
 uploadArea.addEventListener('drop', handleDrop, false);
 
 function handleDrop(e) {
@@ -45,12 +41,11 @@ function handleDrop(e) {
     handleFiles(files);
 }
 
-// Menangani file yang dipilih dari dialog
+// fungsi file yang di pilih
 fileInput.addEventListener('change', (e) => {
     handleFiles(e.target.files);
 });
 
-// --- Logika Utama ---
 
 function handleFiles(files) {
     if (files.length === 0) {
@@ -59,10 +54,8 @@ function handleFiles(files) {
     }
     const file = files[0];
     
-    // Tampilkan pratinjau gambar
     previewImage(file);
     
-    // Kirim gambar ke backend untuk prediksi
     uploadAndPredict(file);
 }
 
@@ -73,7 +66,7 @@ function previewImage(file) {
     };
     reader.readAsDataURL(file);
 
-    // Ganti tampilan dari area upload ke area hasil
+    // tampilan dari area upload ke area hasil
     uploadArea.classList.add('hidden');
     resultArea.classList.remove('hidden');
     loader.classList.remove('hidden');
@@ -104,7 +97,6 @@ async function uploadAndPredict(file) {
 }
 
 function displayResult(data) {
-    // Sembunyikan loader dan tampilkan hasil
     loader.classList.add('hidden');
     resultText.classList.remove('hidden');
 
@@ -112,9 +104,8 @@ function displayResult(data) {
     const confidence = (data.confidence * 100).toFixed(2);
 
     predictionLabel.textContent = prediction;
-    confidenceLabel.textContent = `Tingkat Akurasi: ${confidence}%`;
+    confidenceLabel.textContent = `Tingkat Keyakinan: ${confidence}%`;
 
-    // Beri warna sesuai hasil prediksi
     if (prediction === 'Pneumonia') {
         predictionLabel.className = 'text-4xl font-bold text-red-600';
     } else {
@@ -131,11 +122,10 @@ function displayError(errorMessage) {
 }
 
 
-// --- Tombol Reset ---
+// --- reset ---
 
 resetButton.addEventListener('click', () => {
-    // Kembalikan ke tampilan awal
     uploadArea.classList.remove('hidden');
     resultArea.classList.add('hidden');
-    fileInput.value = ''; // Reset input file
+    fileInput.value = '';
 });
