@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deteksi Pneumonia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 font-sans flex items-center justify-center min-h-screen">
+
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full">
+        
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Deteksi Pneumonia</h1>
+            <p class="text-gray-500 mt-2">Unggah gambar rontgen dada untuk mendapatkan prediksi.</p>
+        </div>
+
+        <div id="upload-area" class="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center cursor-pointer hover:border-blue-500 hover:bg-gray-50 transition">
+            <input type="file" id="file-input" class="hidden" accept="image/jpeg, image/png">
+            <label for="file-input" class="cursor-pointer">
+                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p class="mt-2 text-sm text-gray-600">
+                    <span class="font-semibold text-blue-600">Klik untuk mengunggah</span> atau seret dan letakkan
+                </p>
+                <p class="text-xs text-gray-500 mt-1">PNG, JPG (maks. 10MB)</p>
+            </label>
+        </div>
+
+        <div id="result-area" class="hidden mt-8 text-center">
+            
+            <div class="mb-4">
+                <img id="image-preview" src="#" alt="Pratinjau Gambar" class="max-w-xs mx-auto rounded-lg shadow-md">
+            </div>
+
+            <div id="loader" class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mx-auto mb-4 hidden"></div>
+
+            <div id="result-text" class="hidden">
+                <p class="text-lg font-medium text-gray-600">Hasil Prediksi:</p>
+                <p id="prediction-label" class="text-4xl font-bold"></p>
+                <p id="confidence-label" class="text-md text-gray-500 mt-1"></p>
+                <button id="reset-button" class="mt-6 bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+                    Coba Gambar Lain
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
