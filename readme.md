@@ -82,7 +82,3 @@ Aplikasi Anda sekarang siap digunakan\!
     ├── model.ipynb         # Jupyter Notebook untuk training
     └── requirements.txt    # Kebutuhan library model
 ```
-
-```
-
----
